@@ -59,6 +59,13 @@ FROM Laptop as l,
 WHERE l.model = p.model
   AND l.hd >= 10;
 
+SELECT DISTINCT maker, speed
+FROM Laptop as l
+         LEFT JOIN Product as p
+                   ON l.model = p.model
+WHERE l.model = p.model
+  AND l.hd >= 10
+
 --
 
 -- Задание: 7
@@ -66,22 +73,26 @@ WHERE l.model = p.model
 -- производителя B (латинская буква).
 
 SELECT prod.model, price
-FROM Product prod,
-     PC pc
+FROM Product prod
+         LEFT JOIN PC AS pc
+                   ON prod.model = pc.model
 WHERE prod.model = pc.model
   AND maker = 'B'
 UNION
 SELECT prod.model, price
-FROM Product prod,
-     Printer pr
-WHERE prod.model = pr.model
+FROM Product prod
+         LEFT JOIN Laptop AS lp
+                   ON prod.model = lp.model
+WHERE prod.model = lp.model
   AND maker = 'B'
 UNION
 SELECT prod.model, price
-FROM Product prod,
-     Laptop lp
-WHERE prod.model = lp.model
-  AND maker = 'B';
+FROM Product prod
+         LEFT JOIN Printer AS pr
+                   ON prod.model = pr.model
+WHERE prod.model = pr.model
+  AND maker = 'B'
+
 
 --
 
@@ -105,7 +116,14 @@ WHERE Product.type = 'PC'
 SELECT DISTINCT maker
 FROM Product,
      PC
-WHERE Product.model = PC.model AND PC.speed >= 450;
+WHERE Product.model = PC.model
+  AND PC.speed >= 450;
+
+SELECT DISTINCT maker
+FROM Product p
+         LEFT JOIN PC ON p.model = PC.model
+WHERE p.model = pc.model
+  AND pc.speed > 449
 
 --
 
@@ -116,3 +134,8 @@ WHERE Product.model = PC.model AND PC.speed >= 450;
 SELECT model, price
 FROM Printer
 WHERE price = (SELECT MAX(price) FROM Printer);
+
+SELECT model, price
+FROM Printer
+GROUP BY model, price
+HAVING price = (SELECT MAX(price) FROM printer);
